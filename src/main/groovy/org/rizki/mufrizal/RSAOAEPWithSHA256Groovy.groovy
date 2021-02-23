@@ -1,0 +1,109 @@
+package org.rizki.mufrizal
+
+import javax.crypto.BadPaddingException
+import javax.crypto.Cipher
+import javax.crypto.IllegalBlockSizeException
+import javax.crypto.NoSuchPaddingException
+import javax.crypto.spec.OAEPParameterSpec
+import javax.crypto.spec.PSource
+import java.nio.charset.Charset
+import java.security.InvalidAlgorithmParameterException
+import java.security.InvalidKeyException
+import java.security.KeyFactory
+import java.security.NoSuchAlgorithmException
+import java.security.spec.InvalidKeySpecException
+import java.security.spec.MGF1ParameterSpec
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
+
+class RSAOAEPWithSHA256Groovy {
+    def encrypt(String plainText, String publicKeyString) {
+        try {
+            publicKeyString = publicKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PUBLIC KEY-----", "").replaceAll("-----END PUBLIC KEY-----", "")
+
+            def keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString))
+            def keyFactory = KeyFactory.getInstance("RSA")
+            def publicKey = keyFactory.generatePublic(keySpec)
+
+            def cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey, new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT))
+            def cipherText = cipher.doFinal(plainText.getBytes(Charset.defaultCharset()))
+
+            return Base64.getEncoder().encodeToString(cipherText)
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace()
+            return null
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidKeyException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace()
+            return null
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace()
+            return null
+        } catch (BadPaddingException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    def decrypt(String cipherText, String privateKeyString) {
+        try {
+            def pkcs8EncodedKeySpec
+            if (privateKeyString.contains("BEGIN PRIVATE KEY")) {
+                privateKeyString = privateKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PRIVATE KEY-----", "").replaceAll("-----END PRIVATE KEY-----", "")
+                pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString))
+            } else {
+                privateKeyString = privateKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN RSA PRIVATE KEY-----", "").replaceAll("-----END RSA PRIVATE KEY-----", "")
+                def keyBytes = Base64.getDecoder().decode(privateKeyString)
+                def pkcs1Length = keyBytes.length
+                def totalLength = pkcs1Length + 22
+                def pkcs8Header = [
+                        0x30, (byte) 0x82, (byte) ((totalLength >> 8) & 0xff), (byte) (totalLength & 0xff),
+                        0x2, 0x1, 0x0,
+                        0x30, 0xD, 0x6, 0x9, 0x2A, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xF7, 0xD, 0x1, 0x1, 0x1, 0x5, 0x0,
+                        0x4, (byte) 0x82, (byte) ((pkcs1Length >> 8) & 0xff), (byte) (pkcs1Length & 0xff)
+                ] as byte[]
+                def bytes = new byte[pkcs8Header.length + keyBytes.length]
+                System.arraycopy(pkcs8Header, 0, bytes, 0, pkcs8Header.length)
+                System.arraycopy(keyBytes, 0, bytes, pkcs8Header.length, keyBytes.length)
+                pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(bytes)
+            }
+
+            def keyFactory = KeyFactory.getInstance("RSA")
+            def privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
+
+            def cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding")
+            cipher.init(Cipher.DECRYPT_MODE, privateKey, new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT))
+            return new String(cipher.doFinal(Base64.getDecoder().decode(cipherText)), Charset.defaultCharset())
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace()
+            return null
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace()
+            return null
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidKeyException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace()
+            return null
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace()
+            return null
+        } catch (BadPaddingException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+}
