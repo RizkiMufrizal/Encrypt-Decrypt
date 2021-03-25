@@ -63,5 +63,15 @@ public class App {
         String decryptedMessage = AES256GCM.decrypt(encryptedMessage, decryptedKey);
 
         System.out.println("Decrypted Message " + decryptedMessage);
+
+        /* sign in JWS */
+        String signJws = JWSSignature.sign(message, privateKey);
+
+        System.out.println("Sign JWS " + signJws);
+
+        Boolean isVerifySign = JWSSignature.verify(signJws, publicKey);
+
+        System.out.println("Verify Sign JWS is " + isVerifySign);
+
     }
 }

@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.7'
 }
 
 test {
