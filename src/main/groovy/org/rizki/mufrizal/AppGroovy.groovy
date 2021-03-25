@@ -70,7 +70,11 @@ class AppGroovy {
 
         def isVerifySign = jWSSignatureGroovy.verify(signJws, publicKey)
 
-        println("Verify Sign JWS is ${isVerifySign}");
+        println("Verify Sign JWS is ${isVerifySign}")
+
+        def signJwsOther = jWSSignatureGroovy.signOther(message, privateKey)
+
+        println("Sign JWS ${signJwsOther}")
         /* sign in JWS */
     }
 }

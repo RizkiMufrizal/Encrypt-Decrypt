@@ -72,6 +72,11 @@ public class App {
         Boolean isVerifySign = JWSSignature.verify(signJws, publicKey);
 
         System.out.println("Verify Sign JWS is " + isVerifySign);
+
+        String signJwsOther = JWSSignature.signOther(message, privateKey);
+
+        System.out.println("Sign JWS " + signJwsOther);
+
         /* sign in JWS */
 
     }

@@ -8,8 +8,12 @@ import com.nimbusds.jose.Payload
 import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.crypto.RSASSAVerifier
 
+import java.nio.charset.Charset
+import java.security.InvalidKeyException
 import java.security.KeyFactory
 import java.security.NoSuchAlgorithmException
+import java.security.Signature
+import java.security.SignatureException
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec
@@ -83,6 +87,58 @@ class JWSSignatureGroovy {
             e.printStackTrace()
             return null
         } catch (JOSEException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    def signOther(String body, String privateKeyString) {
+        try {
+            def pkcs8EncodedKeySpec
+            if (privateKeyString.contains("BEGIN PRIVATE KEY")) {
+                privateKeyString = privateKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN PRIVATE KEY-----", "").replaceAll("-----END PRIVATE KEY-----", "")
+                pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString))
+            } else {
+                privateKeyString = privateKeyString.replaceAll("\\n", "").replaceAll("-----BEGIN RSA PRIVATE KEY-----", "").replaceAll("-----END RSA PRIVATE KEY-----", "")
+                def keyBytes = Base64.getDecoder().decode(privateKeyString)
+                def pkcs1Length = keyBytes.length
+                def totalLength = pkcs1Length + 22
+                def pkcs8Header = [
+                        0x30, (byte) 0x82, (byte) ((totalLength >> 8) & 0xff), (byte) (totalLength & 0xff),
+                        0x2, 0x1, 0x0,
+                        0x30, 0xD, 0x6, 0x9, 0x2A, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xF7, 0xD, 0x1, 0x1, 0x1, 0x5, 0x0,
+                        0x4, (byte) 0x82, (byte) ((pkcs1Length >> 8) & 0xff), (byte) (pkcs1Length & 0xff)
+                ] as byte[]
+                def bytes = new byte[pkcs8Header.length + keyBytes.length]
+                System.arraycopy(pkcs8Header, 0, bytes, 0, pkcs8Header.length)
+                System.arraycopy(keyBytes, 0, bytes, pkcs8Header.length, keyBytes.length)
+                pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(bytes)
+            }
+
+            def keyFactory = KeyFactory.getInstance("RSA")
+            def privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
+
+            def rsa = Signature.getInstance("SHA256withRSA")
+            rsa.initSign(privateKey)
+
+            def headerEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString("{\"alg\":\"RS256\"}".getBytes(Charset.defaultCharset()))
+            def bodyEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(body.getBytes(Charset.defaultCharset()))
+
+            rsa.update(headerEncoded.concat(".").concat(bodyEncoded).getBytes(Charset.defaultCharset()))
+
+            return headerEncoded.concat(".").concat(bodyEncoded).concat(".")
+                    .concat(Base64.getUrlEncoder().withoutPadding().encodeToString(rsa.sign()))
+
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace()
+            return null
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace()
+            return null
+        } catch (InvalidKeyException e) {
+            e.printStackTrace()
+            return null
+        } catch (SignatureException e) {
             e.printStackTrace()
             return null
         }
