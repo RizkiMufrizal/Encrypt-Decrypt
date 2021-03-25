@@ -61,5 +61,16 @@ class AppGroovy {
 
         def decryptedMessage = aES256GCMGroovy.decrypt(encryptedMessage, decryptedKey)
         println("Decrypted Message ${decryptedMessage}")
+
+        /* sign in JWS */
+        def jWSSignatureGroovy = new JWSSignatureGroovy()
+        def signJws = jWSSignatureGroovy.sign(message, privateKey)
+
+        println("Sign JWS ${signJws}")
+
+        def isVerifySign = jWSSignatureGroovy.verify(signJws, publicKey)
+
+        println("Verify Sign JWS is ${isVerifySign}");
+        /* sign in JWS */
     }
 }
