@@ -17,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -39,7 +40,7 @@ public class RSAOAEPWithSHA256 {
             return Base64.getEncoder().encodeToString(cipherText);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
-            return e.getMessage();
+            return e.getMessage() + " With Stacktrace " + Arrays.toString(e.getStackTrace());
         }
     }
 
@@ -74,7 +75,7 @@ public class RSAOAEPWithSHA256 {
             return new String(cipher.doFinal(Base64.getDecoder().decode(cipherText)), Charset.defaultCharset());
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
-            return e.getMessage();
+            return e.getMessage() + " With Stacktrace " + Arrays.toString(e.getStackTrace());
         }
     }
 }

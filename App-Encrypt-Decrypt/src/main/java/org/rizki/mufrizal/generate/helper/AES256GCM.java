@@ -46,7 +46,7 @@ public class AES256GCM {
             return Base64.getEncoder().encodeToString(concatCipherTextIV.toByteArray());
         } catch (IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
-            return e.getMessage();
+            return e.getMessage() + " With Stacktrace " + Arrays.toString(e.getStackTrace());
         }
     }
 
@@ -70,7 +70,7 @@ public class AES256GCM {
             return new String(cipher.doFinal(cipherByte), Charset.defaultCharset());
         } catch (BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException e) {
             e.printStackTrace();
-            return e.getMessage();
+            return e.getMessage() + " With Stacktrace " + Arrays.toString(e.getStackTrace());
         }
     }
 }
