@@ -3,54 +3,23 @@ var crypto = require('crypto');
 module.exports = {
 
     encrypt: function (text, masterkey) {
-        try {
-            var iv = crypto.randomBytes(16);
-
-            var salt = crypto.randomBytes(64);
-
-            var key = crypto.pbkdf2Sync(masterkey, salt, 2145, 32, 'sha512');
-
-            var cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-
-            var encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
-
-            var tag = cipher.getAuthTag();
-
-            return Buffer.concat([salt, iv, tag, encrypted]).toString('base64');
-
-        } catch (e) {
-            console.log(e);
-        }
-
-        return null;
+        const IV = crypto.randomBytes(12);
+        const cipher = crypto.createCipheriv('aes-256-gcm', masterkey, IV);
+        const encrypted = cipher.update(text, 'utf8');
+        cipher.final();
+        const tag = cipher.getAuthTag();
+        return Buffer.concat([encrypted, tag, IV]).toString('base64');
     },
 
-    decrypt: function (data, masterkey) {
-        try {
-            var bData = Buffer.from(data, 'base64');
-
-            let salt = bData.slice(0, 64);
-            let iv = bData.slice(64, 80);
-            let tag = bData.slice(80, 96);
-            let text = bData.slice(96);
-
-            //var key = crypto.pbkdf2Sync(masterkey, salt, 2145, 32, 'sha512');
-
-            var decipher = crypto.createDecipheriv('aes-256-gcm', masterkey, iv);
-            decipher.setAuthTag(tag);
-
-            // var decrypted = decipher.update(text, 'binary', 'utf8');
-            // decrypted += decipher.final('utf8');
-
-            let dec = decipher.update(text, null, 'utf8')
-            dec += decipher.final('utf8');          
-
-            return dec;
-
-        } catch (e) {
-            console.log(e);
-        }
-
-        return null;
+    decrypt: function (chiperText, masterkey) {
+        const chiperTextBase64 = Buffer.from(chiperText, 'base64');
+        const IV = chiperTextBase64.subarray(chiperTextBase64.length - 12);
+        const tag = chiperTextBase64.subarray(chiperTextBase64.length - 28, chiperTextBase64.length - 12);
+        const encrypted = chiperTextBase64.subarray(0, chiperTextBase64.length - 28);
+        const decipher = crypto.createDecipheriv('aes-256-gcm', masterkey, IV);
+        decipher.setAuthTag(tag);
+        let stringDecrypted = decipher.update(encrypted, null, 'utf8');
+        stringDecrypted += decipher.final('utf8');
+        return stringDecrypted;
     }
 };

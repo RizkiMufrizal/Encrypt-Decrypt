@@ -25,7 +25,6 @@ function decrypt(es, keyFileName_private) {
 
 function readKeyFromPEMFile(fn) {
     var s = fs.readFileSync(fn, 'utf8');
-    console.log(s);
     return s;
 }
 
