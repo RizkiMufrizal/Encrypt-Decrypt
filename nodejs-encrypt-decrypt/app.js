@@ -1,4 +1,5 @@
-var ch = require('./crypto-helper');
+var ch = require('./rsaoaepwithsha256');
+var aes256gcm = require('./aes256gcm');
 var uuid = require('uuid');
 
 var secretKey = uuid.v4().replace(/-/g, "");

@@ -411,3 +411,7 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,maven,intellij,jetbrains,jetbrains+all,jetbrains+iml,windows,osx,linux,java
+
+node_modules/
+public_Minasa.pem
+private_pkcs8_Minasa.pem
