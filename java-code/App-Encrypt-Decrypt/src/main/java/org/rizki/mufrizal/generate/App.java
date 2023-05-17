@@ -5,11 +5,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
+import org.rizki.mufrizal.generate.helper.AES256CBC;
 import org.rizki.mufrizal.generate.helper.AES256GCM;
 import org.rizki.mufrizal.generate.helper.RSAOAEPWithSHA256;
 
@@ -79,6 +86,26 @@ public class App extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
         plainTextDecryptRSA = new javax.swing.JTextArea();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        plainTextEncryptAESCbc = new javax.swing.JTextArea();
+        secretKeyEncryptCbc = new javax.swing.JTextField();
+        encryptAESCbc = new javax.swing.JButton();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        chiperTextEncryptAESCbc = new javax.swing.JTextArea();
+        jLabel13 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        chiperTextDecryptAESCbc = new javax.swing.JTextArea();
+        secretKeyDecryptCbc = new javax.swing.JTextField();
+        decryptAESCbc = new javax.swing.JButton();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        plainTextDecryptAESCbc = new javax.swing.JTextArea();
+        jLabel16 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -218,9 +245,9 @@ public class App extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addGap(82, 122, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
         );
 
@@ -374,6 +401,150 @@ public class App extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("RSA OAEP With SHA256 Decrypt", jPanel4);
 
+        jLabel11.setText("Secret Key");
+
+        jLabel12.setText("Plain Text");
+
+        plainTextEncryptAESCbc.setColumns(20);
+        plainTextEncryptAESCbc.setRows(5);
+        jScrollPane9.setViewportView(plainTextEncryptAESCbc);
+
+        encryptAESCbc.setText("Process");
+        encryptAESCbc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                encryptAESCbcActionPerformed(evt);
+            }
+        });
+
+        chiperTextEncryptAESCbc.setColumns(20);
+        chiperTextEncryptAESCbc.setRows(5);
+        jScrollPane10.setViewportView(chiperTextEncryptAESCbc);
+
+        jLabel13.setText("Chiper Text");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addGap(8, 8, 8)
+                                .addComponent(secretKeyEncryptCbc))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(13, 13, 13)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(encryptAESCbc)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane10)))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addComponent(secretKeyEncryptCbc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(13, 13, 13)
+                .addComponent(encryptAESCbc)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        jTabbedPane1.addTab("AES 256 CBC Encrypt", jPanel5);
+
+        jLabel14.setText("Secret Key");
+
+        jLabel15.setText("Chiper Text");
+
+        chiperTextDecryptAESCbc.setColumns(20);
+        chiperTextDecryptAESCbc.setRows(5);
+        jScrollPane11.setViewportView(chiperTextDecryptAESCbc);
+
+        decryptAESCbc.setText("Process");
+        decryptAESCbc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decryptAESCbcActionPerformed(evt);
+            }
+        });
+
+        plainTextDecryptAESCbc.setColumns(20);
+        plainTextDecryptAESCbc.setRows(5);
+        jScrollPane12.setViewportView(plainTextDecryptAESCbc);
+
+        jLabel16.setText("Plain Text");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel14))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel15)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(decryptAESCbc)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                            .addComponent(secretKeyDecryptCbc)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel16)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane12)))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(secretKeyDecryptCbc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(decryptAESCbc)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel16)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+
+        jTabbedPane1.addTab("AES 256 CBC Decrypt", jPanel6);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -495,6 +666,40 @@ public class App extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_decryptRSAActionPerformed
 
+    private void encryptAESCbcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encryptAESCbcActionPerformed
+        try {
+            String plain = this.plainTextEncryptAESCbc.getText();
+            String secret = this.secretKeyEncryptCbc.getText();
+            if (secret.length() > 16) {
+                JOptionPane.showMessageDialog(null, "Secret key tidak boleh lebih dari 16 karakter", "Error Message", JOptionPane.ERROR_MESSAGE);
+            } else if (secret.length() < 16) {
+                JOptionPane.showMessageDialog(null, "Secret key tidak boleh kurang dari 16 karakter", "Error Message", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String result = AES256CBC.encrypt(plain, secret);
+                this.chiperTextEncryptAESCbc.setText(result);
+            }
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_encryptAESCbcActionPerformed
+
+    private void decryptAESCbcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptAESCbcActionPerformed
+        try {
+            String plain = this.chiperTextDecryptAESCbc.getText();
+            String secret = this.secretKeyDecryptCbc.getText();
+            if (secret.length() > 16) {
+                JOptionPane.showMessageDialog(null, "Secret key tidak boleh lebih dari 16 karakter", "Error Message", JOptionPane.ERROR_MESSAGE);
+            } else if (secret.length() < 16) {
+                JOptionPane.showMessageDialog(null, "Secret key tidak boleh kurang dari 16 karakter", "Error Message", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String result = AES256CBC.decrypt(plain, secret);
+                this.plainTextDecryptAESCbc.setText(result);
+            }
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException  ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_decryptAESCbcActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -526,15 +731,25 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chiperTextDecryptAES;
+    private javax.swing.JTextArea chiperTextDecryptAESCbc;
     private javax.swing.JTextArea chiperTextDecryptRSA;
     private javax.swing.JTextArea chiperTextEncryptAES;
+    private javax.swing.JTextArea chiperTextEncryptAESCbc;
     private javax.swing.JTextArea chiperTextEncryptRSA;
     private javax.swing.JButton decryptAES;
+    private javax.swing.JButton decryptAESCbc;
     private javax.swing.JButton decryptRSA;
     private javax.swing.JButton encryptAES;
+    private javax.swing.JButton encryptAESCbc;
     private javax.swing.JButton encryptRSA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -547,7 +762,12 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -555,15 +775,20 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea plainTextDecryptAES;
+    private javax.swing.JTextArea plainTextDecryptAESCbc;
     private javax.swing.JTextArea plainTextDecryptRSA;
     private javax.swing.JTextArea plainTextEncryptAES;
+    private javax.swing.JTextArea plainTextEncryptAESCbc;
     private javax.swing.JTextArea plainTextEncryptRSA;
     private javax.swing.JLabel privateKeyName;
     private javax.swing.JLabel publicKeyName;
     private javax.swing.JTextField secretKeyDecrypt;
+    private javax.swing.JTextField secretKeyDecryptCbc;
     private javax.swing.JTextField secretKeyEncrypt;
+    private javax.swing.JTextField secretKeyEncryptCbc;
     private javax.swing.JButton uploadPrivateKey;
     private javax.swing.JButton uploadPublicKey;
     // End of variables declaration//GEN-END:variables
