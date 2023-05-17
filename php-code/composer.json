@@ -4,6 +4,6 @@
         "psr-4": {}
     },
     "require": {
-        "phpseclib/phpseclib": "~3.0"
+        "phpseclib/phpseclib": "3.0.19"
     }
 }
